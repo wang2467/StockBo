@@ -1,0 +1,59 @@
+table {
+    border-collapse: collapse;
+}
+
+th:first-child {
+    text-align: center;
+}
+
+th:not(:first-child),
+td:not(:first-child) {
+    text-align: center;
+}
+
+th:last-child,
+td:last-child {
+    text-align: center;
+}
+
+th, td {
+    max-width: 88px;
+    width: 88px;
+    border: solid 1px #DDDDDD;
+    padding: 5px;
+    text-align: center;
+}
+
+th {
+    font-weight: bolder;
+}
+
+.btn-sm{
+	width: 75px;
+	text-align: center;
+	font-weight: bolder;
+}
+
+.btn-watch{
+	width:75px;
+	text-align: center;
+	font-weight: bolder;
+}
+
+.price-negative{
+	background: red;
+	color: #FFFFFF;
+}
+
+.price-positive{
+	background: green;
+	color: #FFFFFF;
+}
+
+.change-negative{
+	color: red;
+}
+
+.change-positive{
+	color: green;
+}
