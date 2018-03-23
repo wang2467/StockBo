@@ -20,23 +20,23 @@ export default class StockRow extends React.Component {
 	componentDidMount(){
 		this.StockId = setInterval(async () => {
 				const data = await fetch(URL_default+`/stock/${this.props.symbol}/quote`).then((response) => {
-					return response.json().then((data) => {
-						return data;
-					}).catch((err) => {
-						console.log("Json parse Error");
-					})
-				}).catch((err) =>{
-					console.log("Network Error");
-				});
+						return response.json().then((data) => {
+							return data;
+						}).catch((err) => {
+							console.log("Json parse Error");
+						})
+					}).catch((err) =>{
+						console.log("Network Error");
+					});
 				const data2 = await fetch(URL_default+`/stock/${this.props.symbol}/price`).then((response) => {
-					return response.json().then((data) => {
-						return data;
-					}).catch((err) => {
-						console.log("Json parse Error");
-					})
-				}).catch((err) =>{
-					console.log("Network Error");
-				});
+						return response.json().then((data) => {
+							return data;
+						}).catch((err) => {
+							console.log("Json parse Error");
+						})
+					}).catch((err) =>{
+						console.log("Network Error");
+					});
 				if (this.state.prev === undefined){
 					this.setState({
 						price:data2,
@@ -45,7 +45,7 @@ export default class StockRow extends React.Component {
 						open:data.open,
 						close:data.close,
 						prev:data2,
-						change:0
+						change:undefined
 					});
 				} else{
 					const prev_p = this.state.prev;
@@ -59,7 +59,7 @@ export default class StockRow extends React.Component {
 					});
 					if (data2 !== prev_p){
 						this.setState({
-							change:Number(data2-prev_p).toFixed(2)
+							change:Number((data2-data.close)*100/data.close).toFixed(2).toString()+"%"
 						});
 					}
 				}
@@ -75,15 +75,16 @@ export default class StockRow extends React.Component {
 		var priceClass = '';
 		var iconClass = '';
 		var changeClass = '';
-
-		if (this.state.change > 0){
-			iconClass = 'glyphicon glyphicon-triangle-top';
-			priceClass = 'price-positive';
-			changeClass = 'change-positive';
-		} else if (this.state.change < 0){
-			iconClass = 'glyphicon glyphicon-triangle-bottom';
-			priceClass = 'price-negative';
-			changeClass = 'negative';
+		if(this.state.change !== undefined){
+			if (Number(this.state.change.slice(0,-1)) > 0){
+				iconClass = 'glyphicon glyphicon-triangle-top';
+				priceClass = 'price-positive';
+				changeClass = 'change-positive';
+			} else if (Number(this.state.change.slice(0,-1)) < 0){
+				iconClass = 'glyphicon glyphicon-triangle-bottom';
+				priceClass = 'price-negative';
+				changeClass = 'change-negative';
+			}
 		}
 
 		return (

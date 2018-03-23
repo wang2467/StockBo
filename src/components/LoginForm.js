@@ -1,37 +1,38 @@
 import React from "react";
-import {firebase, auth} from "../firebase.js";
+import auth from "../firebase.js";
 
 export default class LoginForm extends React.Component {
-	this.state{
+	state = {
 		email:"",
 		password:""
 	};
 
 	setEmail = (e) => {
 		this.setState({
-			email:e.target.value;
+			email:e.target.value
 		});
 	}
 
 	setPassword = (e) => {
 		this.setState({
-			password:e.target.value;
+			password:e.target.value
 		});
 	}
 
-	// handleSubmit = (e) => {
-	// 	e.preventDefault();
-	// 	auth.signInWithEmailAndPassword(this.state.email, this.state.password).then(() => {
-	// 		this.setState({
-	// 			email:"",
-	// 			password:""
-	// 		});	
-
-	// 	}).catch((error){
-	// 		alert("Email or Password Incorrect");
-	// 	});
-	// }
-
+	handleSubmit = (e) => {
+		e.preventDefault();
+		auth.signInWithEmailAndPassword(this.state.email, this.state.password).then(() => {
+			localStorage.setItem('firebaseAuthInProgress', true);
+			this.setState({
+				email:"",
+				password:""
+			});	
+		}).catch((error) => {
+			console.log(error)
+			alert("Email or Password Incorrect");
+			localStorage.removeItem('firebaseAuthInProgress');
+		});
+	}
 
 	render(){
 		const email = this.state.email;
@@ -57,7 +58,7 @@ export default class LoginForm extends React.Component {
 					placeholder="Password"
 				/>
 			</div>
-			<button type="submit" class="btn btn-default btn-login">Login</button>
+			<button type="submit" className="btn btn-default btn-login" disabled={isInvalid}>Login</button>
 			</form>
 		);
 	}

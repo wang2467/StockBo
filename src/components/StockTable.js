@@ -6,6 +6,7 @@ export default class StockTable extends React.Component {
 		e.preventDefault();
 	}
 
+
 	render(){
 		var items = [];
 		for (var s in this.props.symbols){
