@@ -4,10 +4,7 @@ import auth from "../firebase.js";
 
 
 export default class Login extends React.Component{
-	state = {
-		authed:false
-	}
-
+	
 	componentWillMount(){
 		if (localStorage.getItem('apiToken')){
 			this.props.history.push('/watch');
@@ -29,7 +26,7 @@ export default class Login extends React.Component{
 					<div>
 						<h1>Login</h1>
 						{(localStorage.getItem('firebaseAuthInProgress')) && <h1>Loading</h1>}
-						{!(localStorage.getItem('firebaseAuthInProgress')) && <LoginForm login={this.props.login} history={this.props.history}/>}
+						{!(localStorage.getItem('firebaseAuthInProgress')) && <LoginForm login={this.props.login} history={this.props.history} />}
 					</div>
 			</div>
 		);

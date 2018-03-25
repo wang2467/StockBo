@@ -4,7 +4,7 @@ import auth from "../firebase.js";
 export default class LoginForm extends React.Component {
 	state = {
 		email:"",
-		password:""
+		password:"",
 	};
 
 	setEmail = (e) => {

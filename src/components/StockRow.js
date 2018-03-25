@@ -71,6 +71,7 @@ export default class StockRow extends React.Component {
 		clearInterval(this.StockId);
 	}
 
+
 	render(){
 		var priceClass = '';
 		var iconClass = '';

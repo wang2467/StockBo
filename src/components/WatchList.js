@@ -2,14 +2,27 @@ import React from "react";
 import Titles from "./Titles.js";
 import Form from "./Form.js";
 import StockTable from "./StockTable.js";
+import SignUp from "./SignUp.js";
+
 import {Link} from "react-router-dom";
+
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import AppBar from "material-ui/AppBar";
 import darkBaseTheme from "material-ui/styles/baseThemes/darkBaseTheme";
 import RaisedButton from "material-ui/RaisedButton";
+
 import {database} from "../firebase.js";
 
+/* state structure
+	state = {
+				symbols:{
+					"aapl":"aapl",
+					"fb":"fb",
+					"anet":"anet"
+				}	
+			}
+*/
 
 const URL_default = "https://api.iextrading.com/1.0";
 
@@ -19,16 +32,6 @@ export default class WatchList extends React.Component {
 		super(props);
 		this.state = {symbols:undefined}
 		this.symbols = {}
-		if (localStorage.getItem('apiToken')){
-			database.ref(localStorage.getItem('username').replace(/@|\./g, '-')).once('value', (snapshot) => {
-				snapshot.val().split(',').forEach((i) => {
-					this.symbols[i] = i;
-				})
-				this.setState ({
-					symbols:this.symbols
-				});
-			});
-		}
 	}
 	
 	addTicker = (e) => {
@@ -38,8 +41,12 @@ export default class WatchList extends React.Component {
 			e.target.elements.symbol.value = '';
 			fetch(URL_default+`/stock/${s}/quote`).then((response)=>{
 				if (response.ok){
+					console.log(s);
 					this.symbols[s] = s;
-					database.ref().update({'/wang2467-purdue-edu': Object.keys(this.symbols).join(',')});
+					let child = `/${localStorage.getItem('username').replace(/@|\./g, '-')}`;
+					let updateVal = {}
+					updateVal[child] = Object.keys(this.symbols).join(',');
+					database.ref().update(updateVal);
 					this.setState({
 						symbols:this.symbols
 					});
@@ -57,13 +64,28 @@ export default class WatchList extends React.Component {
 	removeTicker = (e, stock) => {
 		e.preventDefault();
 		delete this.symbols[stock];
-		database.ref().update({'/wang2467-purdue-edu': Object.keys(this.symbols).join(',')});
+		let child = `/${localStorage.getItem('username').replace(/@|\./g, '-')}`;
+		let updateVal = {}
+		updateVal[child] = Object.keys(this.symbols).join(',');
+		database.ref().update(updateVal);
 		this.setState({
 			symbols:this.symbols
 		});
 	}
 
-	componentWillMount(){
+	componentDidMount(){
+		if (localStorage.getItem('apiToken')){
+			database.ref(localStorage.getItem('username').replace(/@|\./g, '-')).once('value', (snapshot) => {
+				snapshot.val().split(',').forEach((i) => {
+					if (i !== ''){
+						this.symbols[i] = i;
+					}
+				})
+				this.setState ({
+					symbols:this.symbols
+				});
+			});
+		}
 	}
 
 
@@ -73,9 +95,14 @@ export default class WatchList extends React.Component {
 				<div>
 					<AppBar title="StockBo" />
 					{!localStorage.getItem('apiToken') && 
-					<Link to="/login">
-						<RaisedButton>Login</RaisedButton>
-					</Link>}
+					<div>
+						<Link to="/login">
+							<RaisedButton>Login</RaisedButton>
+						</Link>
+						<Link to="/signup">
+							<RaisedButton>SignUp</RaisedButton>
+						</Link>
+					</div>}
 					{localStorage.getItem('apiToken') && 
 					<Link to="/logout">
 						<RaisedButton className="logButton">Logout</RaisedButton>
