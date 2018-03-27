@@ -4,6 +4,9 @@ import Form from "./Form.js";
 import StockTable from "./StockTable.js";
 import SignUp from "./SignUp.js";
 
+import ChatList from "./ChatList.js";
+import ChatForm from "./ChatForm.js";
+
 import {Link} from "react-router-dom";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -30,7 +33,7 @@ export default class WatchList extends React.Component {
 	
 	constructor(props){
 		super(props);
-		this.state = {symbols:undefined}
+		this.state = {symbols:undefined, messages:[]}
 		this.symbols = {}
 	}
 	
@@ -73,6 +76,11 @@ export default class WatchList extends React.Component {
 		});
 	}
 
+	addMessages = (e) => {
+		e.preventDefault()
+		this.connection.send(e.target.elements.message.value)
+	}
+
 	componentDidMount(){
 		if (localStorage.getItem('apiToken')){
 			database.ref(localStorage.getItem('username').replace(/@|\./g, '-')).once('value', (snapshot) => {
@@ -84,6 +92,13 @@ export default class WatchList extends React.Component {
 				this.setState ({
 					symbols:this.symbols
 				});
+			});
+		}
+
+		this.connection = new WebSocket("ws://localhost:8000/chat")
+		this.connection.onmessage = (evt) => {
+			this.setState({
+				message:this.state.messages.push(evt.data)
 			});
 		}
 	}
@@ -109,6 +124,8 @@ export default class WatchList extends React.Component {
 					</Link>}
 					<Form addTicker={this.addTicker}/>
 					<StockTable symbols={this.state.symbols} removeTicker={this.removeTicker}/>
+					<ChatList messages={this.state.messages}/>
+					<ChatForm addMessages={this.addMessages}/>
 				</div>
 			</MuiThemeProvider>
 		);

@@ -11,10 +11,7 @@ import createBrowserHistory from "history/createBrowserHistory";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
-import AppBar from "material-ui/AppBar";
 import darkBaseTheme from "material-ui/styles/baseThemes/darkBaseTheme";
-
-import SocketIOClient from "socket.io-client";
 
 const customHistory = createBrowserHistory();
 
@@ -33,18 +30,6 @@ function PrivateRoute({component:Component, ...rest}){
 }
 
 export default class App extends React.Component {
-
-	componentWillMount(){
-		this.socket = SocketIOClient("127.0.0.1:4001")
-		this.state = {
-			socket:this.socket
-		}
-	}
-
-	componentWillUnmount(){
-		this.socket.emit('disconnect');
-	}
-
 	render(){
 
 		return (
